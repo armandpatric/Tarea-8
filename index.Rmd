@@ -1,0 +1,368 @@
+---
+title: "Estadística"
+subtitle: "Aplicaciones de los momentos: entropía diferencial 2"
+author: "Armando Patricio Piña Canul"
+date: "13/11/2023"
+output:
+  rmdformats::material:
+    highlight: kate
+    cards: false
+---
+
+
+```{r knitr_init, echo=FALSE, message=FALSE, warning=FALSE}
+library(highcharter)
+```
+
+
+
+# Entropía diferencial
+
+Sea $f(x)$ la densidad de probabilidad de un experimento aleatorio $\mathbb{E}$. Recordemos que la entropía de la función $f(x)$ (llamada entropía diferencial) está dada por la siguiente expresión:
+$$
+h(X) = -\int_{-\infty}^{+\infty}{f(x)\log(f(x))}.
+$$
+
+La entropía diferencial es pues, la entropía de Shannon para distribuciones que corresponden a variables aleatorias continuas, por ejemplo para la variable aleatoria uniforme, como se vió en la tarea pasada, la entropía tiene la siguiente relación densidad-entropía:
+$$
+h(f(x)=\frac{1}{b-a}) = \ln(b-a)
+$$
+
+y por lo tanto se puede notar que para el caso de la distribución uniforme al incrementar la varianza (cuando $a$ incrementa), se incrementa la entropía. La siguiente figura muestra lo anterior.
+
+```{r eval=TRUE}
+a          <- 0
+b          <- seq(2,8, length=20)               # Variamos b
+entropy    <- log(b-a) 
+hc <- highchart() %>% 
+  hc_add_series(cbind(b,entropy), name="UniformRV_entropy") %>%   hc_add_theme(hc_theme_smpl()) %>% 
+  hc_title(text="Variacion de la entropia con la Varianza") %>%   hc_subtitle(text="Teoria de la informacion") %>%
+  hc_xAxis(title=list(text="Valores de b")) %>%          hc_yAxis(title=list(text="Entropia de la funcion"))
+hc
+
+```
+
+## Ejercicios
+
+Investigar la relación varianza-entropia para las siguientes variables aleatorias continuas:
+
+### Rayleigh
+La distribución de Rayleigh es una distribución continua que describe la magnitud de un vector bidimensional cuyas coordenadas tienen una distribución normal estándar.
+
+La función de densidad de probabilidad de la distribución de Rayleigh es:
+$$f(x;\sigma) = \frac{x}{\sigma^2}exp(- \frac{x^2}{2\sigma^2})$$
+
+donde σ es el parámetro de escala.
+
+La varianza de la distribución de Rayleigh se puede calcular como:
+\ 
+$$Var(X)= \frac{4-\pi}{2}\sigma^2$$
+\
+
+### Normal
+la relación entre la varianza y la entropía puede no ser directa y simple debido a la forma de la función de densidad de probabilidad y la naturaleza de la entropía en el contexto continuo.
+
+La distribución normal tiene una función de densidad de probabilidad dada por:
+$$f(x,\mu,\sigma)= \frac{1}{\sqrt(2\pi\sigma^2)}e^{-\frac{(x-\mu)^2}{2\sigma^2}}$$
+donde μ es la media y σ es la desviación estándar.
+
+La varianza de la distribución normal es $σ^2$
+
+En el caso de la distribución normal, el cálculo exacto de la entropía puede ser complicado debido a la presencia de la función logaritmo en la integral. Sin embargo, la entropía de una variable normal puede expresarse en términos de la desviación estándar (σ) y la constante de Euler-Mascheroni (γ) de la siguiente manera:
+$$H(X)=\frac{1}{2}log(2\pi e\sigma^2)$$
+Aquí,log es el logaritmo natural.
+
+En resumen, mientras que hay una relación entre la varianza $(σ^2)$ y la entropía para la distribución normal, esta relación no es simplemente proporcional. La entropía también depende de la constante de Euler-Mascheroni y de la base del logaritmo utilizado. En la práctica, la entropía puede considerarse como una medida de la dispersión o incertidumbre de la variable aleatoria, y la relación con la varianza se establece a través de la naturaleza de la distribución normal.
+\
+
+### Exponencial
+Dejar X ser una variable aleatoria distribuida exponencialmente con parámetro $\lambda$, es decir, con función de densidad de probabilidad
+$$f(x) = \lambda e^{-\lambda x} \mbox{ para } x \geq 0.$$
+Su entropía diferencial es entonces
+$$h_e(X)=-\int_0^\infty \lambda e^{-\lambda x} \log (\lambda e^{-\lambda x})\,dx
+\\ =-(\int_0^\infty (log\lambda) \lambda e^{-\lambda x} + \int_0^\infty (-\lambda x) \lambda e^{-\lambda x}) \, dx
+\\ =-log\lambda \int_0^\infty f(X) \, dx + \lambda E [X]
+\\ =-log \lambda +1$$
+
+Aquí, $h_e(X)$ fue usado en lugar de h(X) dejar explícito que el logaritmo fue tomado en base e , para simplificar el cálculo.
+\
+
+### Cauchy
+La entropía diferencial de una variable aleatoria continua se puede definir de varias maneras, y no hay una única definición estándar como en el caso discreto.
+
+En el contexto de la distribución Cauchy, la función de densidad de probabilidad (PDF) es:
+$$f(x;x_0,γ)= \frac{1}{\pi γ[1+(\frac{x-x_0}{γ})^2] }$$
+donde $x_0$ es la ubicación de la mediana y γ es el parámetro de escala.
+
+Dado que la entropía para variables aleatorias continuas a menudo implica el cálculo de la integral de $−f(x)log(f(x))$, la presencia de la función logaritmo puede complicar el análisis para distribuciones como la Cauchy. La divergencia en la cola de la distribución Cauchy (las colas pesadas) puede llevar a expresiones infinitas y, por lo tanto, la entropía puede no estar bien definida.
+
+En general, la relación entre la varianza y la entropía para la distribución Cauchy es compleja debido a la naturaleza peculiar de la distribución y la falta de momentos finitos. La Cauchy es conocida por tener colas pesadas, lo que significa que tiene una probabilidad significativa de producir valores atípicos lejanos del centro de la distribución, lo que puede afectar el cálculo de la entropía. En estos casos, otras medidas de dispersión o incertidumbre pueden ser más apropiadas que la varianza y la entropía.
+\
+
+### Laplace
+La distribución Laplace es una distribución continua que tiene la función de densidad de probabilidad (PDF) dada por:
+$$f(x;\mu,b)= \frac{1}{2b} e^{\frac{|x-\mu|}{b}}$$
+donde μ es la ubicación del pico y b es el parámetro de escala.
+
+La varianza de la distribución Laplace se puede calcular como:
+$$Var(X)=2b^2$$
+Para calcular la entropía diferencial de la distribución Laplace, utilizamos la fórmula general:
+$$
+h(X) = -\int_{-\infty}^{+\infty}{f(x)\log(f(x))}.
+$$
+En el caso de la Laplace, el cálculo de la entropía puede ser más manejable que en algunas otras distribuciones continuas, ya que la función logaritmo de la PDF de la Laplace se simplifica debido a la estructura de valor absoluto. 
+
+En términos generales, a medida que el parámetro de escala b de la distribución Laplace aumenta, la varianza Var(X)) también aumenta, indicando una mayor dispersión de la distribución. En cuanto a la entropía, su relación con la varianza puede ser más compleja y depender de las propiedades específicas de la distribución Laplace.
+\
+
+### Logística
+La distribución logística es una distribución continua que tiene la función de densidad de probabilidad (PDF) dada por:
+$$
+f(x;\mu,s)= \frac{e^{(x-\mu)/s}}{s(1+e^{-(x-\mu)/s})^2}
+$$
+donde μ es la media y s es el parámetro de escala (también conocido como parámetro de forma).
+
+La varianza de la distribución logística se puede calcular como:
+$$
+Var(X)= \frac{s^2\pi^2}{3}
+$$
+Para calcular la entropía diferencial de la distribución logística, utilizamos la fórmula general:
+$$
+h(X) = -\int_{-\infty}^{+\infty}{f(x)\log(f(x))}.
+$$
+Puedes utilizar técnicas numéricas para calcular la entropía de manera más precisa.
+
+En términos generales, a medida que el parámetro de escala s de la distribución logística aumenta, la varianza (Var(X)) también aumenta, indicando una mayor dispersión de la distribución. La relación exacta entre la varianza y la entropía dependerá de la definición específica de entropía y de la forma en que se utilice en el análisis de la distribución logística.
+\
+
+### Triangular
+La distribución triangular está definida por tres parámetros: el valor mínimoa, el valor máximo b, y la moda c. La forma específica de la distribución triangular depende de la posición relativa de estos parámetros.
+
+- Distribución Isósceles (c = (a + b) / 2):
+Cuando la moda c es igual al punto medio entre a y b, la distribución triangular es isósceles. En este caso, la varianza y la entropía estarán influenciadas por la distancia entre a y b, pero no hay una relación simple y directa entre ellas.
+
+- Distribución Asimétrica (c ≠ (a + b) / 2):
+Si c no es igual al punto medio, la distribución triangular es asimétrica. En este caso, la posición de la moda c afectará tanto la forma de la distribución como la relación entre la varianza y la entropía.
+
+En términos generales, para cualquier distribución continua, un aumento en la varianza indica una mayor dispersión de los valores alrededor de la media, lo que podría traducirse en una mayor incertidumbre o "desorden" en la distribución. La entropía, por otro lado, mide la incertidumbre o el desorden en la distribución de probabilidad. Así que, cualitativamente, podríamos esperar que un aumento en la varianza se asocie con un aumento en la entropía.
+
+Para la variable aleatoria triangular, ?Existe una relación entre su moda y su entropía?
+
+Nota: Para responder adecuadamente los anteriores cuestionamientos es necesario investigar las entropías de las variables aleatorias así como los valores de sus varianzas. De igual forma es necesario conocer el funcionamiento del paquete de `R` llamado `highcharter`.
+
+
+# Entropía de Shannon discreta
+
+La entropía mide el grado de complejidad de una variable aleatoria descrita por medio de su PDF o bién mediante su PMF. Para el caso discreto, la ecuación entrópica de Shannon está dada por:
+$$
+H(p) = -\sum_{k}{p_k \log(p_k)}
+$$
+
+Para la variable aleatoria Binomial, la PMF está dada por:
+$$
+\mbox{Pr}\{X=k\} = {n\choose k} p^k(1-p)^{n-k}
+$$
+y por lo tanto, la relación entre la entropía y la probabilidad $p$ está dada empíricamente como:
+
+```{r eval=TRUE}
+n          <- 20
+x          <- 0:20
+p          <- seq(0,1, length=20)
+entropies  <- numeric(20)
+for(i in 1:length(p))
+{
+  densities     <- dbinom(x,n,p[i])
+  entropies[i]  <- -1*sum(densities*log(densities))
+  
+}
+theoretical <- 0.5*log(2*pi*n*exp(1)*p*(1-p))
+hc <- highchart() %>% 
+  hc_add_series(cbind(p,entropies), name="BinomialRV_empirical") %>%  hc_add_series(cbind(p,theoretical), name="BinomialRV_theoretical") %>%  hc_add_theme(hc_theme_smpl()) %>% 
+  hc_title(text="Variacion de la entropia contra p") %>%   hc_subtitle(text="Teoria de la informacion") %>%
+  hc_xAxis(title=list(text="Valores de probabilidad p")) %>%          hc_yAxis(title=list(text="Entropia de la funcion"))
+hc
+
+```
+
+## Ejercicios
+
+Replicar el mismo procedimiento anterior para las siguientes variables aleatorias discretas:
+
+### Binomial negativa.
+La distribución binomial negativa, conocida también como distribución de Pascal, es un tipo de distribución de probabilidad discreta que describe el número de ensayos independientes e idénticos necesarios para obtener un número fijo de éxitos antes de obtener un número fijo de fracasos. Esta distribución es útil en situaciones en las que se repiten pruebas hasta que se alcanza un cierto número predeterminado de éxitos.
+
+- Las características principales de una variable aleatoria binomial negativa son:
+
+- Número de Ensayos: Representa el número de ensayos necesarios para alcanzar el número deseado de éxitos.
+
+- Probabilidad de Éxito en un Solo Ensayo (p): Probabilidad de que un solo ensayo resulte en éxito.
+
+- Número de Éxitos Deseados (r): Especifica el número de éxitos que se deben lograr antes de que se detengan los ensayos.
+
+La función de masa de probabilidad de una variable aleatoria binomial negativa se puede expresar de la siguiente manera:
+$$
+P(X=k)= {{k+r-1}\choose k} p^r (1-p)^k
+$$
+Donde:
+
+- k es el número de fracasos antes de alcanzar el r-ésimo éxito.
+- p es la probabilidad de éxito en un solo ensayo.
+- ${n\choose k}$es el coeficiente binomial, que representa el número de maneras de elegir k éxitos de n ensayos.
+
+Esta distribución es útil en situaciones donde se repiten experimentos hasta que se alcanza un número específico de éxitos, como en el caso de lanzar una moneda hasta obtener un cierto número de caras o realizar pruebas de productos hasta encontrar un número específico de defectos.
+```{r}
+n <- 20
+r <- 5
+x <- 0:20
+p <- seq(0, 1, length = 20)
+
+entropies <- numeric(length(p))
+for (i in 1:length(p)) {
+  densities <- dnbinom(x, size = r, prob = p[i])
+  entropies[i] <- -sum(densities * log(densities))}
+theoretical <- 0.5 * log(2 * pi * r * exp(1) * p * (1 - p))
+plot(p, entropies, type = 'l', col = 'black', xlab = 'Valores de probabilidad p', ylab = 'Entropía de la función', main = 'Variación de la entropía contra p', ylim = range(c(0, entropies, theoretical), finite = TRUE))
+lines(p, theoretical, col = 'blue')
+legend('topright', legend = c('BinomialRV_empirical', 'BinomialRV_theoretical'), col = c('blue', 'red'), lty = 1)
+
+
+
+```
+\
+
+### Geométrica.
+
+La variable aleatoria geométrica modela el número de ensayos independientes e idénticos necesarios para obtener el primer éxito en una secuencia de ensayos de Bernoulli con probabilidad de éxito $p$. Si denotamos esta variable aleatoria como $X$, su función de masa de probabilidad (PMF) es:
+
+$$
+P(X = k) = (1-p)^{k-1} p
+$$
+
+Donde:
+
+- X es la variable aleatoria geométrica.
+- k es el número de ensayos necesarios para obtener el primer éxito.
+- p es la probabilidad de éxito en un solo ensayo.
+
+Esta fórmula representa la probabilidad de que se necesiten exactamente k ensayos para obtener el primer éxito.
+
+- Media y Varianza:
+La media de una variable aleatoria geométrica es $\frac{1}{p} $ y la varianza es $\frac{1-p}{p^2}$
+
+- Función de Distribución Acumulativa (CDF):
+La función de distribución acumulativa (CDF) de una variable aleatoria geométrica se expresa como 
+$F(X≤k)=1−(1−p)^k$, lo que representa la probabilidad acumulativa de obtener el primer éxito en k ensayos o menos.
+
+- Memoria Exponencial:
+La distribución geométrica tiene la propiedad de la "falta de memoria". Esto significa que la probabilidad de que ocurra el primer éxito en el futuro no está influenciada por el pasado. La probabilidad de que ocurra en el próximo ensayo sigue siendo p, independientemente de cuántos ensayos previos hayan tenido lugar.
+
+La distribución geométrica es comúnmente utilizada para modelar situaciones en las que estás interesado en el tiempo hasta que ocurre un evento particular, como el tiempo hasta que se produce la primera falla en un sistema o el tiempo hasta que un jugador tenga éxito en un juego repetitivo con probabilidad p de ganar en cada intento.
+
+```{r}
+p <- seq(0, 1, length = 20)
+entropies <- numeric(length(p))
+for (i in 1:length(p)) {
+  probabilities <- dgeom(1:length(p), prob = p[i])
+  entropies[i] <- -sum(probabilities * log(probabilities))
+}
+
+theoretical <- 0.5 * log(2 * pi * exp(1) * p * (1 - p))
+plot(p, entropies, type = 'l', col = 'blue', xlab = 'Valores de probabilidad p', 
+     ylab = 'Entropía de la función', main = 'Variación de la entropía contra p',
+     ylim = range(c(0, entropies, theoretical), finite = TRUE))
+lines(p, theoretical, col = 'red')
+legend('topright', legend = c('GeometricRV_empirical', 'GeometricRV_theoretical'), 
+       col = c('blue', 'red'), lty = 1)
+
+
+```
+
+
+### Poisson.
+Una variable aleatoria discreta que sigue una distribución de Poisson se utiliza para modelar el número de eventos que ocurren en un intervalo de tiempo o espacio fijo, cuando estos eventos ocurren de manera independiente y a una tasa promedio constante. La función de masa de probabilidad (PMF) de una variable aleatoria de Poisson se define como:
+$$
+P(X=k)= \frac{e^{-\lambda}\lambda ^k}{k!}
+$$
+Donde:
+
+- X es la variable aleatoria de Poisson.
+- k es el número de eventos que estamos contando.
+- λ es la tasa promedio de eventos por unidad de tiempo o espacio.
+
++ Media y Varianza:
+La media (μ) y la varianza $(\sigma^2)$ de una distribución de Poisson son ambas iguales a la tasa promedio (λ). En otras palabras, $μ=σ ^2=λ$. 
+
++ Distribución límite de la binomial:
+La distribución de Poisson es una distribución límite de la distribución binomial cuando el número de ensayos (n) tiende a infinito y la probabilidad de éxito (p) tiende a cero, manteniendo constante la tasa promedio (λ=np).Aproximación a eventos raros:
+La distribución de Poisson es útil para modelar eventos raros cuando la tasa promedio es baja y el número total de oportunidades es grande.
+```{r}
+
+lambda <- 3  
+k <- 0:20   
+entropies <- numeric(length(k))
+for (i in 1:length(k)) {
+  probabilities <- dpois(k[i], lambda)
+  entropies[i] <- -sum(probabilities * log(probabilities))
+}
+theoretical <- 0.5 * log(2 * pi * exp(1) * lambda * (1 - lambda))
+plot(k, entropies, type = 'l', col = 'blue', xlab = 'Número de eventos (k)', 
+     ylab = 'Entropía de la función', main = 'Variación de la entropía contra k',
+     ylim = range(c(0, entropies, theoretical), finite = TRUE))
+
+abline(h = theoretical, col = 'red', lty = 2)
+
+legend('topright', legend = c('PoissonRV_empirical', 'PoissonRV_theoretical'), 
+       col = c('blue', 'red'), lty = c(1, 2))
+
+```
+
+\
+
+### Hipergeométrica.
+na variable aleatoria discreta que sigue una distribución hipergeométrica modela la probabilidad de obtener un número específico de éxitos en una muestra sin reemplazo de una población finita dividida en dos categorías (éxitos y fracasos). La función de masa de probabilidad (PMF) de una variable aleatoria hipergeométrica se define como:
+$$
+P(X=k)= \frac{{K\choose k} {{N-K}\choose{n-k}}}{N\choose k}
+$$
+
+Donde:
+
+- X es la variable aleatoria hipergeométrica.
+- k es el número de éxitos en la muestra.
+- N es el tamaño total de la población.
+- K es el número total de éxitos en la población.
+- n es el tamaño de la muestra.
+
+
++ Media y Varianza:
+La media (μ) y la varianza $(\sigma ^2)$ de una distribución hipergeométrica son:
+$μ= \frac{nk}{N}$
+$σ^2= \frac{nk(N-K)(N-n)}{N^2(N-1)}$
+
++ Distribución Límite de la Binomial:
+La distribución hipergeométrica se aproxima a una distribución binomial cuando el tamaño de la población N es grande en comparación con el tamaño de la muestra n. En este caso, la probabilidad de éxito p en la distribución binomial se aproxima a $\frac{K}{N}$.
+
++ Muestreo sin Reemplazo:
+La principal característica de la distribución hipergeométrica es que representa el muestreo sin reemplazo, ya que la probabilidad de éxito cambia con cada selección.
+
+```{r}
+N <- 50   
+K <- 20   
+n <- 10   
+
+k <- 0:n
+entropies <- numeric(length(k))
+for (i in 1:length(k)) {
+  probabilities <- dhyper(k[i], m = K, n = N - K, k = n)
+  entropies[i] <- -sum(probabilities * log(probabilities))
+}
+
+theoretical <- 0.5 * log(2 * pi * exp(1) * (n * K / N) * ((N - n) * (N - K) / N))
+plot(k, entropies, type = 'l', col = 'blue', xlab = 'Número de éxitos en la muestra', 
+     ylab = 'Entropía de la función', main = 'Variación de la entropía contra k',
+     ylim = c(0, max(c(entropies, theoretical))))
+abline(h = theoretical, col = 'red', lty = 2)
+legend('topright', legend = c('HypergeoRV_empirical', 'HypergeoRV_theoretical'), 
+       col = c('blue', 'red'), lty = c(1, 2))
+
+
+```
